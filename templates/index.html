@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizerria's Almurt-ata</title>
+</head>
+<body>
+    <ol>
+        {% for pizzeria in pizzerias_list %}
+        <li><a href="/pizerria/{{ pizzeria.id }}/">{{ Pizerria.pizzeria_name }}</a></li>
+    {% endfor %}
+    </ol>
+</body>
+</html>
