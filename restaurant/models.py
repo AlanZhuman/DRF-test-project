@@ -5,4 +5,4 @@ class Restaurant(models.Model):
     restaurant_address = models.TextField()
   
     def __str__(self):
-        return f"id - {str(self.pk)}, Name - {self.restaurant_name}"
+        return self.restaurant_name
