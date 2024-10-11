@@ -2,11 +2,12 @@ from rest_framework import serializers
 from .models import Pizza, Restaurant
 
 class PizzaSerializer(serializers.ModelSerializer):
-    restaurant_id = serializers.IntegerField(source='restaurant.id')  # Изменено
+    restaurant_name = serializers.CharField(source='restaurant.restaurant_name')  # Изменено
+    pizza_id = serializers.IntegerField(source='id')
 
     class Meta:
         model = Pizza
-        fields = ("id", 'pizza_name', 'cheese_type', 'dough_type', 'secret_ingredient', 'restaurant_id')
+        fields = ("pizza_id", 'pizza_name', 'cheese_type', 'dough_type', 'secret_ingredient', 'restaurant_name')
 
     def create(self, validated_data):
         restaurant_data = validated_data.pop('restaurant')
