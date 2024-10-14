@@ -8,6 +8,8 @@ from rest_framework import serializers
 from rest_framework import status
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from .selectors import *
+from .services import *
  
 @api_view(['GET'])
 def ApiOverview(request):
@@ -23,39 +25,44 @@ def ApiOverview(request):
 @swagger_auto_schema(method='post', request_body=PizzaSerializer)
 @api_view(['POST'])
 def add_items(request):
-    serializer = PizzaSerializer(data=request.data)
-
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    status_code, response = create_pizza(request)
+    if status_code == 200:
+        return Response(response, status=status.HTTP_201_CREATED)
+    elif status_code == 400:
+        return Response({'error: ':response}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({'error: ':response}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
 @api_view(['GET'])
 def view_items(request):
-    items = Pizza.objects.all()
-
-    if items:
-        serializer = PizzaSerializer(items, many=True)
-        return Response(serializer.data)
+    status_code, response = get_all_pizzas()
+    
+    if status_code == 200:
+        return Response(response)
+    elif status_code == 404:
+        return Response({'error': 'No pizzas found.'}, status=status.HTTP_404_NOT_FOUND)
     else:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': response}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     
 @swagger_auto_schema(method='post',request_body=PizzaSerializer)
 @api_view(['POST'])
 def update_items(request, pizza_slug):
-    item = Pizza.objects.get(slug=pizza_slug)
-    data = PizzaSerializer(instance=item, data=request.data)
- 
-    if data.is_valid():
-        data.save()
-        return Response(data.data)
+    status_code, response = update_pizza(request, pizza_slug)
+    if status_code == 200:
+        return Response(response)
+    elif status_code == 404:
+        return Response({'error': 'None pizza found.'}, status=status.HTTP_404_NOT_FOUND)
     else:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': response}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['DELETE'])
 def delete_items(request, pizza_slug):
-    item = get_object_or_404(Pizza, slug=pizza_slug)
-    item.delete()
-    return Response(status=status.HTTP_202_ACCEPTED)
+    status_code, response = delete_pizza(pizza_slug)
+    if status_code == 202:
+        return Response(status=status.HTTP_202_ACCEPTED)
+    elif status_code == 404:
+        return Response({'error': response}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
