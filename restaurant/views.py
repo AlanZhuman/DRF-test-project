@@ -14,27 +14,24 @@ def ApiOverview(request):
     api_urls = {
         'Read': '/all',
         'Create': '/create',
-        'Update': '/update/pk',
-        'Delete': '/delete/pk'
+        'Update': '/update/restaurant_name',
+        'Delete': '/delete/restaurant_name'
     }
  
     return Response(api_urls)
 
-@swagger_auto_schema(method='post',request_body=RestaurantSerializer)
+@swagger_auto_schema(method='post', request_body=RestaurantSerializer)
 @api_view(['POST'])
 def add_items(request):
-    item = RestaurantSerializer(data=request.data)
- 
-    # validating for already existing data
-    if Restaurant.objects.filter(**request.data).exists():
-        raise serializers.ValidationError('This data already exists')
- 
-    if item.is_valid():
-        item.save()
-        return Response(item.data)
-    else:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-       
+    serializer = RestaurantSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
 @api_view(['GET'])
 def view_items(request):
     items = Restaurant.objects.all()
@@ -47,8 +44,8 @@ def view_items(request):
     
 @swagger_auto_schema(method='post',request_body=RestaurantSerializer)
 @api_view(['POST'])
-def update_items(request, pk):
-    item = Restaurant.objects.get(pk=pk)
+def update_items(request, restaurant_slug):
+    item = Restaurant.objects.get(slug=restaurant_slug)
     data = RestaurantSerializer(instance=item, data=request.data)
  
     if data.is_valid():
@@ -58,7 +55,7 @@ def update_items(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['DELETE'])
-def delete_items(request, pk):
-    item = get_object_or_404(Restaurant, pk=pk)
+def delete_items(request, restaurant_slug):
+    item = get_object_or_404(Restaurant, slug=restaurant_slug)
     item.delete()
     return Response(status=status.HTTP_202_ACCEPTED)

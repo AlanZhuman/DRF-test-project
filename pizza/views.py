@@ -14,8 +14,8 @@ def ApiOverview(request):
     api_urls = {
         'Read': '/all',
         'Create': '/create',
-        'Update': '/update/pk',
-        'Delete': '/delete/pk'
+        'Update': '/update/pizza_name',
+        'Delete': '/delete/pizza_name'
     }
  
     return Response(api_urls)
@@ -23,21 +23,14 @@ def ApiOverview(request):
 @swagger_auto_schema(method='post', request_body=PizzaSerializer)
 @api_view(['POST'])
 def add_items(request):
-    # Создание сериализатора с входными данными
     serializer = PizzaSerializer(data=request.data)
-    
-    # Проверка на существование пиццы
-    if serializer.is_valid():
-        # Проверка, существует ли ресторан
-        restaurant_id = serializer.validated_data.get('restaurant', {}).get('id')
-        if not Restaurant.objects.filter(id=restaurant_id).exists():
-            return Response({'error': 'Restaurant not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Сохранение новой пиццы
-        serializer.save()  # Теперь это сохранит пиццу с правильной ссылкой на ресторан
+    if serializer.is_valid():
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Возвращаем ошибки валидации
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 @api_view(['GET'])
 def view_items(request):
@@ -51,8 +44,8 @@ def view_items(request):
     
 @swagger_auto_schema(method='post',request_body=PizzaSerializer)
 @api_view(['POST'])
-def update_items(request, pk):
-    item = Pizza.objects.get(pk=pk)
+def update_items(request, pizza_slug):
+    item = Pizza.objects.get(slug=pizza_slug)
     data = PizzaSerializer(instance=item, data=request.data)
  
     if data.is_valid():
@@ -62,7 +55,7 @@ def update_items(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['DELETE'])
-def delete_items(request, pk):
-    item = get_object_or_404(Pizza, pk=pk)
+def delete_items(request, pizza_slug):
+    item = get_object_or_404(Pizza, slug=pizza_slug)
     item.delete()
     return Response(status=status.HTTP_202_ACCEPTED)

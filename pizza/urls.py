@@ -6,6 +6,6 @@ urlpatterns = [
     path('', views.ApiOverview, name='home'),
     path('create/', views.add_items, name='add-items'),
     path('all/', views.view_items, name='view_items'),
-    path('update/<int:pk>/', views.update_items, name='update-items'),
-    path('delete/<int:pk>/', views.delete_items, name='delete-items'),
+    path('update/<slug:pizza_slug>/', views.update_items, name='update-items'),
+    path('delete/<slug:pizza_slug>//', views.delete_items, name='delete-items'),
 ]   
