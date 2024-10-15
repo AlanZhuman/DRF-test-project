@@ -1,0 +1,11 @@
+version: "3"
+services:
+ django_server:
+  container_name: drf-test-project-container
+  build: .
+  ports:
+   - "8000:8000"
+  volumes:
+   - ./:/app/
+  command: bash -c "pip install -r requirements.txt && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
