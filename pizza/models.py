@@ -14,6 +14,8 @@ class Pizza(models.Model):
     dough_type = models.CharField(choices=Dough_type.choices ,max_length=50)
     secret_ingredient = models.CharField(max_length=100)
     restaurant = models.ForeignKey(Restaurant, related_name='pizzas', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Pizza name - {self.pizza_name}"

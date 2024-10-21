@@ -32,6 +32,15 @@ def add_items(request):
         return Response({'error: ':response}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({'error: ':response}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@swagger_auto_schema(method='post', request_body=PizzaSerializer)
+@api_view(['POST'])
+def add_items_delayed(request):
+    status_code, response = create_pizza_delayed(request)
+    if status_code == 200:
+        return Response(response, status=status.HTTP_202_ACCEPTED)
+    else:
+        return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
 @api_view(['GET'])

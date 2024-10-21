@@ -8,8 +8,8 @@ class PizzaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pizza
-        fields = ('pizza_id', 'pizza_name', 'slug', 'cheese_type', 'dough_type', 'secret_ingredient', 'restaurant_name')
-        read_only_fields = ('pizza_id', 'slug')
+        fields = ('pizza_id', 'pizza_name', 'slug', 'cheese_type', 'dough_type', 'secret_ingredient', 'restaurant_name', 'created_at', 'updated_at')
+        read_only_fields = ('pizza_id', 'slug', 'created_at', 'updated_at')
 
     def create(self, validated_data):
         # Извлечение данных о ресторане

@@ -1,6 +1,6 @@
 from .models import Pizza
 from .serializers import PizzaSerializer
-from django.shortcuts import get_object_or_404
+from .tasks import celery_create_pizza
 
 def update_pizza(request, pizza_slug):
     try:
@@ -26,6 +26,14 @@ def create_pizza(request):
     elif serializer.is_valid() == False:
         return 400, {'error': 'Provided data is invalid'}
     return 500, {'Serializer error:': serializer.errors}
+
+def create_pizza_delayed(request_data):
+    try:
+        celery_create_pizza.delay(request_data.data)
+        return 200, {'msg':'Task in process'}
+    except Exception as e:
+        return 500, {'error': e}
+
 
 def delete_pizza(pizza_slug):
     try:

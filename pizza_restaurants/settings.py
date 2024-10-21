@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django.contrib.staticfiles',  # required for serving swagger ui's css/js files
     'drf_yasg',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,15 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_TASK_SERIALIZER= 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT= ['json']
+CELERY_TIMEZONE = 'Asia/Almaty'
+CELERY_ENABLE_UTC= True
+
+# Celery Beat Settings
+CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'
