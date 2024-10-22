@@ -41,4 +41,4 @@ def delete_pizza(pizza_slug):
     except Pizza.DoesNotExist:
         return 404, {'error': 'Pizza not found.'}
     item.delete()
-    return 202
+    return 202, {'msg':'Deleted successful'}
