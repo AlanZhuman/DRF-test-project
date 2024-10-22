@@ -7,7 +7,7 @@ from .models import Pizza
 # /api/pizza/create correct test-case
 @pytest.mark.django_db
 def test_create_pizza():
-    # Создаем ресторан
+    # Создаем ресторан в БД
     restaurant = Restaurant.objects.create(restaurant_name="Test Restaurant", slug='test-restaurant', restaurant_address='Test Address')
 
     client = APIClient()
@@ -20,7 +20,7 @@ def test_create_pizza():
     }
 
     # Отправляем POST запрос и проверяем ответ
-    response = client.post(reverse('add-items'), data=test_data, format='json')
+    response = client.post(reverse('add-pizza'), data=test_data, format='json')
 
     # Проверка статуса и содержимого ответа
     assert response.status_code == 201
@@ -40,12 +40,12 @@ def test_view_all_pizzas():
     }
 
     # Отправляем POST запрос и проверяем ответ
-    response = client.post(reverse('add-items'), data=test_data, format='json')
+    response = client.post(reverse('add-pizza'), data=test_data, format='json')
     
     # Проверка статуса и содержимого ответа
     assert response.status_code == 201
 
-    view_response = client.get(reverse('view-items'))
+    view_response = client.get(reverse('view-pizzas'))
 
     assert view_response.status_code == 200
 
@@ -75,7 +75,7 @@ def test_update_pizza():
     }
 
     # Отправляем POST запрос на обновление пиццы с использованием правильного slug
-    update_response = client.post(reverse('update-items', args=[pizza_slug]), data=test_updated_data, format='json')
+    update_response = client.post(reverse('update-pizza', args=[pizza_slug]), data=test_updated_data, format='json')
 
     # Проверяем успешность обновления
     assert update_response.status_code == 200
@@ -98,7 +98,7 @@ def test_delete_pizza():
     }
 
     # Отправляем POST запрос и проверяем ответ
-    response = client.post(reverse('add-items'), data=test_data, format='json')
+    response = client.post(reverse('add-pizza'), data=test_data, format='json')
 
     # Проверяем статус создания пиццы
     assert response.status_code == 201
@@ -108,6 +108,6 @@ def test_delete_pizza():
     pizza_slug = pizza.slug  # Используем сгенерированный slug
     assert Pizza.objects.filter(slug=pizza_slug).exists()
 
-    delete_response = client.delete(reverse('delete-items', args=[pizza_slug]))
+    delete_response = client.delete(reverse('delete-pizza', args=[pizza_slug]))
 
     assert delete_response.status_code == 204

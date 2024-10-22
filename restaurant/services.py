@@ -33,4 +33,4 @@ def delete_restaurant(restaurant_slug):
     except Restaurant.DoesNotExist:
         return 404, {'error': 'Restaurant not found.'}
     item.delete()
-    return 202
+    return 202, {'msg':'Deleted successful'}

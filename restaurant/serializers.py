@@ -10,4 +10,4 @@ class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields=("id", "restaurant_name", 'slug', "restaurant_address", "pizzas")
-        read_only_fields=('slug', '')
+        read_only_fields=('id', 'slug', 'pizzas')

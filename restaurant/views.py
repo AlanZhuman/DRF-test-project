@@ -61,7 +61,7 @@ def update_items(request, restaurant_slug):
 def delete_items(request, restaurant_slug):
     status_code, response = delete_restaurant(restaurant_slug)
     if status_code == 202:
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_204_NO_CONTENT)
     elif status_code == 404:
         return Response({'error': response}, status=status.HTTP_404_NOT_FOUND)
     else:

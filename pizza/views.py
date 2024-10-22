@@ -68,7 +68,6 @@ def update_items(request, pizza_slug):
 
 @api_view(['DELETE'])
 def delete_items(request, pizza_slug):
-    print(pizza_slug)
     status_code, response = delete_pizza(pizza_slug)
     if status_code == 202:
         return Response(status=status.HTTP_204_NO_CONTENT)
